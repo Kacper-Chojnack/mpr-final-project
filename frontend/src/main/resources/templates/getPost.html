@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" type="text/css" href="static/css/styles.css">
+</head>
+
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+<header>
+  <div class="container mx-auto">
+    <a th:href="@{/}">
+      <h1 class="text-2xl font-bold cursor-pointer">Nazwa Twojego Bloga</h1>
+    </a>
+  </div>
+</header>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title text-blue-500 text-lg font-semibold mb-2">
+        Nazwa: <span th:text="${blogPost.nameOfCreatedPost}"></span>
+      </h5>
+      <p class="card-text text-gray-500 mb-2">
+        Data utworzenia: <span th:text="${blogPost.dateOfCreatedPost}"></span>
+      </p>
+      <p class="card-text text-gray-700">
+        Autor: <span th:text="${blogPost.authorOfCreatedPost}"></span>
+      </p>
+      <p class="card-text">
+        Treść: <span th:text="${blogPost.contentOfCreatedPost}"></span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2024 Profesjonalny blog!</p>
+</footer>
+
+</body>
+
+</html>

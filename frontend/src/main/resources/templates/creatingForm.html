@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nowy Post</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="font-sans bg-gray-100 flex flex-col min-h-screen items-center">
+
+<header class="bg-blue-500 text-white py-4 w-full">
+    <div class="container mx-auto ml-4">
+        <a href="/" class="text-3xl font-bold">Profesjonalny blog!</a>
+    </div>
+</header>
+
+<h1 class="text-3xl font-bold mt-8">Nowy Post</h1>
+
+<form th:action="@{/create}" method="post" th:object="${blogPostDto}" class="mt-8 max-w-screen-md w-full">
+    <label for="nameOfCreatedPost" class="block text-sm font-medium text-gray-700">Nazwa:</label>
+    <input type="text" id="nameOfCreatedPost" name="nameOfCreatedPost" th:field="*{nameOfCreatedPost}"
+           required class="mt-1 p-2 border rounded-md w-full" />
+
+    <label for="authorOfCreatedPost" class="block text-sm font-medium text-gray-700 mt-4">Autor:</label>
+    <input type="text" id="authorOfCreatedPost" name="authorOfCreatedPost" th:field="*{authorOfCreatedPost}"
+           required class="mt-1 p-2 border rounded-md w-full" />
+
+    <label for="contentOfCreatedPost" class="block text-sm font-medium text-gray-700 mt-4">Treść:</label>
+    <textarea id="contentOfCreatedPost" name="contentOfCreatedPost" th:field="*{contentOfCreatedPost}"
+              required class="mt-1 p-2 border rounded-md w-full"></textarea>
+
+    <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Utwórz Post</button>
+
+    <div th:if="${error}" class="text-red-500 mt-2">
+        <span th:text="${error}"></span>
+    </div>
+</form>
+
+<footer class="bg-gray-200 py-4 w-full mt-auto">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2024 Profesjonalny blog!</p>
+    </div>
+</footer>
+
+</body>
+
+</html>
