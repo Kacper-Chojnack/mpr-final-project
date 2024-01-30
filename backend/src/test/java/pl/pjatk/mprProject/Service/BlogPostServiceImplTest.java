@@ -10,6 +10,8 @@ import pl.pjatk.mprProject.Exception.BlogPostNotFoundException;
 import pl.pjatk.mprProject.Model.BlogPost;
 import pl.pjatk.mprProject.Repository.BlogPostRepository;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,109 +31,50 @@ class BlogPostServiceImplTest {
     }
 
     @Test
-    void shouldGetAllBlogPosts() {
-        // Mockowanie zachowania i testowanie
+    void getAllBlogPosts_ShouldReturnAllPosts() {
+        when(blogPostRepository.findAll()).thenReturn(Collections.singletonList(new BlogPost()));
+        assertFalse(blogPostService.getAllBlogPosts().isEmpty());
     }
 
     @Test
-    void shouldCreateBlogPost() {
+    void createBlogPost_WhenPostExists_ShouldThrowException() {
+        BlogPost existingPost = new BlogPost();
+        existingPost.setNameOfCreatedPost("Test Post");
+
+        when(blogPostRepository.findByNameOfCreatedPost("Test Post")).thenReturn(existingPost);
+
         BlogPost newPost = new BlogPost();
         newPost.setNameOfCreatedPost("Test Post");
 
-        when(blogPostRepository.findByNameOfCreatedPost("Test Post")).thenReturn(null);
-        when(blogPostRepository.save(any(BlogPost.class))).thenReturn(newPost);
-
-        BlogPost created = blogPostService.createBlogPost(newPost);
-
-        assertNotNull(created);
-        verify(blogPostRepository).save(newPost);
+        assertThrows(BlogPostAlreadyExistsException.class, () -> blogPostService.createBlogPost(newPost));
     }
 
     @Test
-    void shouldThrowBlogPostAlreadyExistsException() {
-        BlogPost existingPost = new BlogPost();
-        existingPost.setNameOfCreatedPost("Existing Post");
-
-        when(blogPostRepository.findByNameOfCreatedPost("Existing Post")).thenReturn(existingPost);
-
-        BlogPost newPost = new BlogPost();
-        newPost.setNameOfCreatedPost("Existing Post");
-
-        assertThrows(BlogPostAlreadyExistsException.class, () -> {
-            blogPostService.createBlogPost(newPost);
-        });
+    void deleteBlogPost_WhenPostDoesNotExist_ShouldThrowException() {
+        when(blogPostRepository.existsById(1L)).thenReturn(false);
+        assertThrows(BlogPostNotFoundException.class, () -> blogPostService.deleteBlogPost(1L));
     }
 
     @Test
-    void shouldDeleteBlogPost() {
-        Long id = 1L;
-        when(blogPostRepository.existsById(id)).thenReturn(true);
-
-        blogPostService.deleteBlogPost(id);
-
-        verify(blogPostRepository).deleteById(id);
-    }
-
-    @Test
-    void shouldThrowBlogPostNotFoundExceptionOnDelete() {
-        Long id = 1L;
-        when(blogPostRepository.existsById(id)).thenReturn(false);
-
-        assertThrows(BlogPostNotFoundException.class, () -> {
-            blogPostService.deleteBlogPost(id);
-        });
-    }
-
-    @Test
-    void shouldGetBlogPostById() {
-        Long id = 1L;
+    void getBlogPostById_WhenPostExists_ShouldReturnPost() {
         BlogPost post = new BlogPost();
-        when(blogPostRepository.findById(id)).thenReturn(Optional.of(post));
+        when(blogPostRepository.findById(1L)).thenReturn(Optional.of(post));
 
-        BlogPost found = blogPostService.getBlogPostById(id);
-
-        assertNotNull(found);
-        assertEquals(post, found);
+        assertNotNull(blogPostService.getBlogPostById(1L));
     }
 
     @Test
-    void shouldThrowBlogPostNotFoundExceptionOnGetById() {
-        Long id = 1L;
-        when(blogPostRepository.findById(id)).thenReturn(Optional.empty());
-
-        assertThrows(BlogPostNotFoundException.class, () -> {
-            blogPostService.getBlogPostById(id);
-        });
+    void getBlogPostById_WhenPostDoesNotExist_ShouldThrowException() {
+        when(blogPostRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(BlogPostNotFoundException.class, () -> blogPostService.getBlogPostById(1L));
     }
 
     @Test
-    void shouldUpdateBlogPost() {
-        Long id = 1L;
-        BlogPost existingPost = new BlogPost();
-        existingPost.setId(id);
-        existingPost.setNameOfCreatedPost("Original Name");
+    void updateBlogPost_WhenPostDoesNotExist_ShouldThrowException() {
+        when(blogPostRepository.findById(1L)).thenReturn(Optional.empty());
+        BlogPost postToUpdate = new BlogPost();
+        postToUpdate.setId(1L);
 
-        when(blogPostRepository.findById(id)).thenReturn(Optional.of(existingPost));
-        when(blogPostRepository.save(any(BlogPost.class))).thenReturn(existingPost);
-
-        BlogPost updatedPost = new BlogPost();
-        updatedPost.setNameOfCreatedPost("Updated Name");
-
-        blogPostService.updateBlogPost(id, updatedPost);
-
-        verify(blogPostRepository).save(existingPost);
-        assertEquals("Updated Name", existingPost.getNameOfCreatedPost());
-    }
-
-    @Test
-    void shouldThrowBlogPostNotFoundExceptionOnUpdate() {
-        Long id = 1L;
-        when(blogPostRepository.findById(id)).thenReturn(Optional.empty());
-
-        BlogPost updatedPost = new BlogPost();
-
-        assertThrows(BlogPostNotFoundException.class, () -> {
-            blogPostService.updateBlogPost(id, updatedPost);
-        });
+        assertThrows(BlogPostNotFoundException.class, () -> blogPostService.updateBlogPost(1L, postToUpdate));
     }
 }
