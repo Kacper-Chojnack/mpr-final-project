@@ -1,3 +1,5 @@
+Projekt na zajęcia z metod programowania.
+
 Wymagania projektowe:
 - Frontend: Czy aplikacja posiada 3 formularze (post, delete, put)  a także stronę z wyświetlaniem wszystkich obiektów i działa poprawnie
   
